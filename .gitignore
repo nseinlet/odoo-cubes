@@ -1,0 +1,7 @@
+*.py[cod]
+.project
+.pydevproject
+.settings
+addons/ediserver/static/modules/edicli.zip
+scripts/*/*.zip
+*.zip

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="true">
+
+		<record model="ir.model" id="biwizard.x_cubescomputedfield">
+			<field name="name">BI wizard computed fields</field>
+			<field name="model">x_biwizard.cubescomputedfields</field>
+			<field name="info">BI cubes' computed fields</field>
+			<field name="state">manual</field>
+		</record>
+		
+        <record model="ir.model.fields" id="biwizard.x_cubecomputedfield_cube">
+			<field name="name">x_cube_id</field>
+			<field name="field_description">Cube</field>
+			<field name="model_id" eval="ref('biwizard.x_cubescomputedfield')"/>
+			<field name="model">x_biwizard.cubescomputedfields</field>
+			<field name="ttype">many2one</field>
+			<field name="relation">x_biwizard.cubes</field>
+			<field name="state">manual</field>
+		</record>
+		<record model="ir.model.fields" id="biwizard.x_cubecomputedfield_name">
+			<field name="name">x_name</field>
+			<field name="field_description">Name</field>
+			<field name="model_id" eval="ref('biwizard.x_cubescomputedfield')"/>
+			<field name="model">x_biwizard.cubescomputedfields</field>
+			<field name="ttype">char</field>
+			<field name="state">manual</field>
+			<field name="required">1</field>
+		</record>
+		<record model="ir.model.fields" id="biwizard.x_cubecomputedfield_type">
+			<field name="name">x_type</field>
+			<field name="field_description">Type</field>
+			<field name="model_id" eval="ref('biwizard.x_cubescomputedfield')"/>
+			<field name="model">x_biwizard.cubescomputedfields</field>
+			<field name="ttype">selection</field>
+			<field name="selection">[('float', 'float'), ('integer', 'integer'), ('char','char'), ('date', 'date'), ('datetime', 'datetime')]</field>
+			<field name="state">manual</field>
+			<field name="required">1</field>
+		</record>
+		<record model="ir.model.fields" id="biwizard.x_cubecomputedfield_formula">
+			<field name="name">x_formula</field>
+			<field name="field_description">Formula</field>
+			<field name="model_id" eval="ref('biwizard.x_cubescomputedfield')"/>
+			<field name="model">x_biwizard.cubescomputedfields</field>
+			<field name="ttype">text</field>
+			<field name="state">manual</field>
+			<field name="required">1</field>
+		</record>
+        
+	</data>
+</openerp>

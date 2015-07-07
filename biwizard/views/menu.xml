@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<!-- cubes -->
+		<record model="ir.actions.act_window" id="biwizard_action_list_cubes">
+			<field name="name">Cubes</field>
+			<field name="res_model">x_biwizard.cubes</field>
+			<field name="view_mode">tree,form,diagram</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">Create your first cube</p>
+			</field>
+		</record>
+
+		<!-- Menu -->
+		<menuitem id="menu_biwizard_reporting" name="Custom Cubes" parent="base.menu_reporting" sequence="150"/>
+
+		<menuitem id="menu_biwizard_cubes_list" parent="menu_biwizard_reporting" name="Cubes" sequence="10"
+			action="biwizard_action_list_cubes"/>
+
+	</data>
+</openerp>
