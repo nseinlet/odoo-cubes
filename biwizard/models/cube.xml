@@ -35,6 +35,22 @@
 			<field name="relation">res.groups</field>
 			<field name="state">manual</field>
 		</record>
+		<record model="ir.model.fields" id="biwizard.x_cube_materialized">
+			<field name="name">x_materialized</field>
+			<field name="field_description">Materialized view</field>
+			<field name="model_id" eval="ref('biwizard.x_cubes')"/>
+			<field name="model">x_biwizard.cubes</field>
+			<field name="ttype">boolean</field>
+			<field name="state">manual</field>
+		</record>
+		<record model="ir.model.fields" id="biwizard.x_cube_concurrent">
+			<field name="name">x_refresh_concurrent</field>
+			<field name="field_description">Refresh concurrently (requires PG 9.4)</field>
+			<field name="model_id" eval="ref('biwizard.x_cubes')"/>
+			<field name="model">x_biwizard.cubes</field>
+			<field name="ttype">boolean</field>
+			<field name="state">manual</field>
+		</record>
 	</data>
 	<data noupdate="false">
 		<record model="ir.actions.server" id="biwizard.x_modelforcube_create">
@@ -51,7 +67,10 @@ def calc_field_name(fieldname):
         return "x_%s" % fieldname
 
 def update_cube(object):
-    query = 'create view "x_biwizard_%s" as select ' % (object.x_name)
+    query = 'create '
+    if object.x_materialized:
+        query += 'materialized '
+    query += 'view "x_biwizard_%s" as select ' % (object.x_name)
 
     #Fields
     if object.x_fields_ids:
@@ -106,7 +125,7 @@ if model_ids:
     for model_id in model_ids:
         cr.execute("delete from ir_model_fields where model_id = %s", (model_id.id,))
         cr.execute("delete from ir_model where id = %s", (model_id.id,))
-    cr.execute("drop view IF EXISTS x_biwizard_%s" % object.x_name)
+    cr.execute("drop %s view IF EXISTS x_biwizard_%s" % ("MATERIALIZED" if object.x_materialized else "", object.x_name))
     cr.execute('commit')
     irrule_ids = env["ir.model.access"].search([('model_id', 'in', model_ids.ids)])
     irrule_ids.unlink()
@@ -296,7 +315,7 @@ if view_ids:
 #Clean model
 model_ids = env["ir.model"].search([('name', '=', object.x_name)])
 if model_ids:
-    cr.execute("drop view IF EXISTS x_biwizard_%s" % object.x_name)
+    cr.execute("drop %s view IF EXISTS x_biwizard_%s" % ("MATERIALIZED" if object.x_materialized else "", object.x_name))
     irrule_ids = env["ir.model.access"].search([('model_id', 'in', model_ids.ids)])
     irrule_ids.unlink()
     irrule_ids = env["ir.rule"].search([('model_id', 'in', model_ids.ids)])
@@ -322,6 +341,25 @@ if not object.x_state=='draft':
             <field name="kind">on_write</field>
             <field name="server_action_ids" eval="[(4, ref('biwizard.wkf_set_cube_to_edited'))]"/>
         </record>
+	
+		<record model="ir.actions.server" id="cube_update_one_materialized_view">
+            <field name="name">Update one materialized views</field>
+            <field name="model_id" ref="biwizard.x_cubes"/>
+            <field name="code">
+if object.x_materialized:
+    cr.execute("refresh materialized view %s x_biwizard_%s" % ("CONCURRENTLY" if object.x_refresh_concurrent else '', object.x_name))
+            </field>
+        </record>
+		
+		<record model="ir.actions.server" id="cube_update_materialized_view">
+            <field name="name">Update materialized views</field>
+            <field name="model_id" ref="biwizard.x_cubes"/>
+            <field name="code">
+for cube in model.search([('x_materialized', '=', True)]):
+    cr.execute("refresh materialized view %s x_biwizard_%s" % ("CONCURRENTLY" if object.x_refresh_concurrent else '', object.x_name))
+            </field>
+        </record>
+			
 		
 	</data>
 </openerp>
