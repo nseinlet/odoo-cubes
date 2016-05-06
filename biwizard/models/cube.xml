@@ -357,6 +357,8 @@ if object.x_materialized:
             <field name="code">
 for cube in model.search([('x_materialized', '=', True)]):
     cr.execute("refresh materialized view %s x_biwizard_%s" % ("CONCURRENTLY" if object.x_refresh_concurrent else '', object.x_name))
+for cube in env['x_biwizard.cubeunion'].search([('x_materialized', '=', True)]):
+    cr.execute("refresh materialized view %s x_biwizard_%s" % ("CONCURRENTLY" if object.x_refresh_concurrent else '', object.x_name))
             </field>
         </record>
 			

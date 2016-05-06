@@ -17,3 +17,9 @@ biwizard_all_cubescomputedfield,All on cubes,biwizard.x_cubescomputedfield,,0,0,
 biwizard_reader_cubesacl,Reader on cubes acl,biwizard.x_cubesrule,group_biwizard_reader,1,0,0,0
 biwizard_writer_cubesacl,Manager on cubes acl,biwizard.x_cubesrule,group_biwizard_writer,1,1,1,1
 biwizard_all_cubesacl,All on cubes acl,biwizard.x_cubesrule,,0,0,0,0
+biwizard_reader_cubeunion,Reader on cube union,biwizard.x_cubeunion,group_biwizard_reader,1,0,0,0
+biwizard_writer_cubeunion,Manager on cube union,biwizard.x_cubeunion,group_biwizard_writer,1,1,1,1
+biwizard_all_cubeunion,All on cube union,biwizard.x_cubeunion,,0,0,0,0
+biwizard_reader_ruleunion,Reader on cube union rules,biwizard.x_cubeunionrule,group_biwizard_reader,1,0,0,0
+biwizard_writer_ruleunion,Manager on cube union rules,biwizard.x_cubeunionrule,group_biwizard_writer,1,1,1,1
+biwizard_all_ruleunion,All on cube union rules,biwizard.x_cubeunionrule,,0,0,0,0

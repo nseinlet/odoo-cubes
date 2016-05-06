@@ -11,7 +11,7 @@
 					<header>
 						<button name="%(x_modelforcube_create)d" type="action" string="Update model" class="oe_highlight" attrs="{'invisible': [('x_state', '=', 'sync')]}"/>
 						<button name="%(x_modelforcube_delete)d" type="action" string="Delete model" attrs="{'invisible': [('x_state', '=', 'draft')]}"/>
-						<button name="%(cube_update_materialized_view)d" type="action" string="Update materialized view" attrs="{'invisible': ['|', ('x_state', '=', 'draft'), ('x_materialized', '=', False)]}"/>
+						<button name="%(cube_update_one_materialized_view)d" type="action" string="Update materialized view" attrs="{'invisible': ['|', ('x_state', '=', 'draft'), ('x_materialized', '=', False)]}"/>
 						<field name="x_state" widget="statusbar"/>
 	    			</header>
 					<sheet>
