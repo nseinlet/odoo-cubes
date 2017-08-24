@@ -7,7 +7,9 @@
 			<field name="info">BI custom cube union</field>
 			<field name="state">manual</field>
 		</record>
-
+	</data>
+	
+	<data noupdate="false">
         <record id="biwizard.x_cubeunion_name" model="ir.model.fields">
 			<field name="name">x_name</field>
 			<field name="field_description">Name</field>
@@ -60,17 +62,13 @@
 			<field name="relation">ir.model</field>
 			<field name="state">manual</field>
 		</record>        
-    </data>
-	
-	<data noupdate="false">
 		<record id="biwizard.x_modelforcubeunion_create" model="ir.actions.server">
             <field name="name">update model for cube</field>
             <field name="model_id" eval="ref('biwizard.x_cubeunion')"/>
             <field name="state">code</field>
-            <field name="condition">True</field>
             <field name="sequence">5</field>
             <field name="code">
-return True
+action = True
             </field>
         </record>
 
@@ -120,11 +118,11 @@ if not object.x_state=='draft':
             </field>
         </record>
 		
-		<record id="automated_wkf_set_cubeunion_to_edited" model="base.action.rule">
+		<record id="automated_wkf_set_cubeunion_to_edited" model="base.automation">
             <field name="name">Set state to edited</field>
             <field name="model_id" ref="biwizard.x_cubeunion"/>
-            <field name="kind">on_write</field>
-            <field name="server_action_ids" eval="[(4, ref('biwizard.wkf_set_cubeunion_to_edited'))]"/>
+            <field name="trigger">on_write</field>
+            <field name="child_ids" eval="[(4, ref('biwizard.wkf_set_cubeunion_to_edited'))]"/>
         </record>
 	
 		<record id="cubeunion_update_one_materialized_view" model="ir.actions.server">

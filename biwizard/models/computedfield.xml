@@ -8,7 +8,8 @@
 			<field name="info">BI cubes' computed fields</field>
 			<field name="state">manual</field>
 		</record>
-		
+	</data>
+	<data noupdate="false">
         <record model="ir.model.fields" id="biwizard.x_cubecomputedfield_cube">
 			<field name="name">x_cube_id</field>
 			<field name="field_description">Cube</field>

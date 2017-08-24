@@ -53,7 +53,7 @@ Create new views for BI analysis
              'security/biwizard_groups.xml',
              'security/ir.model.access.csv',
              ],
-    'depends' : ['base_action_rule'],
+    'depends' : ['base_automation'],
     'js': ['static/src/js/*.js'],
     'css': ['static/src/css/*.css'],
     'qweb': ['static/src/xml/*.xml'],

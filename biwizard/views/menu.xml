@@ -22,7 +22,7 @@
 		</record>
 
 		<!-- Menu -->
-		<menuitem id="menu_biwizard_reporting" name="Custom Cubes" parent="base.menu_reporting" sequence="150"/>
+		<menuitem id="menu_biwizard_reporting" name="Custom Cubes" sequence="150"/>
 
 		<menuitem id="menu_biwizard_cubes_list" parent="menu_biwizard_reporting" name="Cubes" sequence="1"
 			action="biwizard_action_list_cubes"/>

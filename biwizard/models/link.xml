@@ -8,7 +8,9 @@
 			<field name="info">BI cubes' links</field>
 			<field name="state">manual</field>
 		</record>
-
+	</data>
+	
+	<data noupdate="false">
         <record model="ir.model.fields" id="biwizard.x_cubelink_cube">
 			<field name="name">x_cube_id</field>
 			<field name="field_description">Cube</field>
@@ -81,9 +83,7 @@
 			<field name="state">manual</field>
 			<field name="required">1</field>
 		</record>
-	</data>
-	
-	<data noupdate="false">
+
 		<record model="ir.actions.server" id="set_cube_id_in_link">
 			<field name="name">Set cube_id in links</field>
 			<field name="model_id" ref="biwizard.x_cubeslinks"/>
@@ -93,12 +93,12 @@ if not object.x_cube_id and object.x_cubemodel1_id:
 			</field>
 		</record>
 		
-		<record id="automated_set_cube_id_in_link" model="base.action.rule">
+		<record id="automated_set_cube_id_in_link" model="base.automation">
             <field name="name">Set cube_id in links</field>
             <field name="model_id" ref="biwizard.x_cubeslinks"/>
-            <field name="kind">on_create_or_write</field>
+            <field name="trigger">on_create_or_write</field>
 			<field name="sequence">5</field>
-            <field name="server_action_ids" eval="[(4, ref('biwizard.set_cube_id_in_link'))]"/>
+            <field name="child_ids" eval="[(4, ref('biwizard.set_cube_id_in_link'))]"/>
         </record>
 		
 		<record model="ir.actions.server" id="wkf_set_linkscube_to_edited">
@@ -110,12 +110,12 @@ if not object.x_cube_id.x_state=='draft':
 			</field>
 		</record>
 		
-		<record id="automated_wkf_set_linkscube_to_edited" model="base.action.rule">
+		<record id="automated_wkf_set_linkscube_to_edited" model="base.automation">
 			<field name="name">Set cube state to edited</field>
 			<field name="model_id" ref="biwizard.x_cubeslinks"/>
-			<field name="kind">on_create_or_write</field>
+			<field name="trigger">on_create_or_write</field>
 			<field name="sequence">20</field>
-			<field name="server_action_ids" eval="[(4, ref('biwizard.wkf_set_linkscube_to_edited'))]"/>
+			<field name="child_ids" eval="[(4, ref('biwizard.wkf_set_linkscube_to_edited'))]"/>
 		</record>
 		
 	</data>

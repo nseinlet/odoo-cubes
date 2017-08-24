@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data noupdate="true">
-
 		<record model="ir.model" id="biwizard.x_cubesfield">
 			<field name="name">BI wizard fields</field>
 			<field name="model">x_biwizard.cubesfields</field>
 			<field name="info">BI cubes' fields</field>
 			<field name="state">manual</field>
 		</record>
-        
+	</data>
+	
+	<data noupdate="false">    
         <record model="ir.model.fields" id="biwizard.x_cubefield_cube">
 			<field name="name">x_cube_id</field>
 			<field name="field_description">Cube</field>
@@ -71,10 +72,6 @@
 			<field name="state">manual</field>
 		</record>
         
-	</data>
-	
-	
-	<data noupdate="false">
 		<record model="ir.actions.server" id="set_cube_id_in_field">
 			<field name="name">Set cube_id in fields</field>
 			<field name="model_id" ref="biwizard.x_cubesfield"/>
@@ -84,12 +81,12 @@ if not object.x_cube_id and object.x_cubemodel_id:
 			</field>
 		</record>
 		
-		<record id="automated_set_cube_id_in_field" model="base.action.rule">
+		<record id="automated_set_cube_id_in_field" model="base.automation">
             <field name="name">Set cube_id in links</field>
             <field name="model_id" ref="biwizard.x_cubesfield"/>
-            <field name="kind">on_create_or_write</field>
+            <field name="trigger">on_create_or_write</field>
 			<field name="sequence">5</field>
-            <field name="server_action_ids" eval="[(4, ref('biwizard.set_cube_id_in_field'))]"/>
+            <field name="child_ids" eval="[(4, ref('biwizard.set_cube_id_in_field'))]"/>
         </record>
 		
 		<record model="ir.actions.server" id="wkf_set_fieldscube_to_edited">
@@ -101,12 +98,12 @@ if not object.x_cube_id.x_state=='draft':
 			</field>
 		</record>
 		
-		<record id="automated_wkf_set_fieldscube_to_edited" model="base.action.rule">
+		<record id="automated_wkf_set_fieldscube_to_edited" model="base.automation">
 			<field name="name">Set cube state to edited</field>
 			<field name="model_id" ref="biwizard.x_cubesfield"/>
-			<field name="kind">on_create_or_write</field>
+			<field name="trigger">on_create_or_write</field>
 			<field name="sequence">20</field>
-			<field name="server_action_ids" eval="[(4, ref('biwizard.wkf_set_fieldscube_to_edited'))]"/>
+			<field name="child_ids" eval="[(4, ref('biwizard.wkf_set_fieldscube_to_edited'))]"/>
 		</record>
 		
 	</data>

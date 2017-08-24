@@ -7,7 +7,8 @@
 			<field name="info">BI custom cubes</field>
 			<field name="state">manual</field>
 		</record>
-
+	</data>
+	<data noupdate="false">
         <record model="ir.model.fields" id="biwizard.x_cube_name">
 			<field name="name">x_name</field>
 			<field name="field_description">Name</field>
@@ -51,8 +52,6 @@
 			<field name="ttype">boolean</field>
 			<field name="state">manual</field>
 		</record>
-	</data>
-	<data noupdate="false">
 		<record model="ir.actions.server" id="biwizard.x_modelforcube_create">
             <field name="name">update model for cube</field>
             <field name="model_id" eval="ref('biwizard.x_cubes')"/>
@@ -335,11 +334,11 @@ if not object.x_state=='draft':
             </field>
         </record>
 		
-		<record id="automated_wkf_set_cube_to_edited" model="base.action.rule">
+		<record id="automated_wkf_set_cube_to_edited" model="base.automation">
             <field name="name">Set state to edited</field>
             <field name="model_id" ref="biwizard.x_cubes"/>
-            <field name="kind">on_write</field>
-            <field name="server_action_ids" eval="[(4, ref('biwizard.wkf_set_cube_to_edited'))]"/>
+            <field name="trigger">on_write</field>
+            <field name="child_ids" eval="[(4, ref('biwizard.wkf_set_cube_to_edited'))]"/>
         </record>
 	
 		<record model="ir.actions.server" id="cube_update_one_materialized_view">
