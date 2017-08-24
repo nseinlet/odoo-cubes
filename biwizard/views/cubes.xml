@@ -49,6 +49,7 @@
 										<field name="x_graph"/>
 										<field name="x_searchable"/>
 										<field name="x_groupable"/>
+										<field name="x_alias"/>
 									</tree>
 								</field>
 							</page>

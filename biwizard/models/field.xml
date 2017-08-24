@@ -71,6 +71,14 @@
 			<field name="selection">[('row', 'row'), ('measure', 'measure')]</field>
 			<field name="state">manual</field>
 		</record>
+		<record model="ir.model.fields" id="biwizard.x_cubefield_alias">
+			<field name="name">x_alias</field>
+			<field name="field_description">Alias</field>
+			<field name="model_id" eval="ref('biwizard.x_cubesfield')"/>
+			<field name="model">x_biwizard.cubesfields</field>
+			<field name="ttype">char</field>
+			<field name="state">manual</field>
+		</record>
         
 		<record model="ir.actions.server" id="set_cube_id_in_field">
 			<field name="name">Set cube_id in fields</field>

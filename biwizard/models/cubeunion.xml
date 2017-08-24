@@ -76,7 +76,6 @@ action = True
             <field name="name">delete model for cube union</field>
             <field name="model_id" eval="ref('biwizard.x_cubeunion')"/>
             <field name="state">code</field>
-            <field name="condition">True</field>
             <field name="sequence">5</field>
             <field name="code">
 #Clean action

@@ -56,14 +56,14 @@
             <field name="name">update model for cube</field>
             <field name="model_id" eval="ref('biwizard.x_cubes')"/>
             <field name="state">code</field>
-            <field name="condition">True</field>
             <field name="sequence">5</field>
             <field name="code">
-def calc_field_name(fieldname):
-    if fieldname.startswith("x_"):
-        return fieldname
-    else:
-        return "x_%s" % fieldname
+def calc_field_name(fieldname, model, alias=''):
+    if alias:
+		if alias.startswith("x_"):
+			return alias
+		return "x_%s" % alias
+    return "x_%s_%s" % (model, fieldname)
 
 def update_cube(object):
     query = 'create '
@@ -73,14 +73,14 @@ def update_cube(object):
 
     #Fields
     if object.x_fields_ids:
-        query = "%s%s" % (query, ",".join(['"%s"."%s" as "%s"' % (field.x_cubemodel_id.x_name, field.x_field_id.name, calc_field_name(field.x_field_id.name)) for field in object.x_fields_ids]))
+        query = "%s%s" % (query, ",".join(['"%s"."%s" as "%s"' % (field.x_cubemodel_id.x_name, field.x_field_id.name, calc_field_name(field.x_field_id.name, field.x_cubemodel_id.x_name, field.x_alias)) for field in object.x_fields_ids]))
 
     if object.x_fields_ids and object.x_computedfields_ids:
         query ="%s,"  % query
 
     #Computed fields
     if object.x_computedfields_ids:
-        query = "%s%s" % (query, ",".join(['%s as "%s"' % (field.x_formula, calc_field_name(field.x_name)) for field in object.x_computedfields_ids]))
+        query = "%s%s" % (query, ",".join(['%s as "%s"' % (field.x_formula, calc_field_name(field.x_name, 'cptd')) for field in object.x_computedfields_ids]))
 
     #magic fields: ID
     if object.x_fields_ids or object.x_computedfields_ids:
@@ -94,15 +94,21 @@ def update_cube(object):
         query='%s,"%s"."%s" as "%s"' % (query, mdls[0].x_name, fld, fld)
 	
     #Joins
+	aliased = []
     if object.x_links_ids:
         jointures = ""
         for jointure in env['x_biwizard.cubeslinks'].search([('id', 'in', object.x_links_ids.ids)], order='x_sequence'):
             if jointures=="":
                 jointures = '"%s" as %s' % (jointure.x_cubemodel1_id.x_model_id.model.replace(".", "_"), jointure.x_cubemodel1_id.x_name)
-            jointures = '%s %s "%s" as %s' % (jointures, jointure.x_linktype or 'inner join', jointure.x_cubemodel2_id.x_model_id.model.replace(".", "_"), jointure.x_cubemodel2_id.x_name)
+                aliased.append(jointure.x_cubemodel1_id.x_name)
+            if jointure.x_cubemodel2_id.x_name in aliased:
+                jointures = '%s %s %s' % (jointures, jointure.x_linktype or 'inner join', jointure.x_cubemodel2_id.x_name)
+            else:
+                jointures = '%s %s "%s" as %s' % (jointures, jointure.x_linktype or 'inner join', jointure.x_cubemodel2_id.x_model_id.model.replace(".", "_"), jointure.x_cubemodel2_id.x_name)
+                aliased.append(jointure.x_cubemodel2_id.x_name)
             jointures = '%s on "%s"."%s"="%s"."%s"' % (jointures, jointure.x_cubemodel1_id.x_name, jointure.x_field1_id.name, jointure.x_cubemodel2_id.x_name, jointure.x_field2_id.name)
         query = "%s from %s" % (query, jointures)
-    cr.execute(query)
+    env.cr.execute(query)
 
 def check_cube_validity(cube):
     if not cube.x_models_ids or len(cube.x_models_ids)&lt;2:
@@ -115,17 +121,17 @@ def check_cube_validity(cube):
     if unlinked_models:
         raise Warning("Unlinked model(s): %s" % ",".join(unlinked_models))
             
-            
+object=record
 check_cube_validity(object)
 
 #Delete previously created model
 model_ids = env["ir.model"].search([('name', '=', object.x_name)])
 if model_ids:
     for model_id in model_ids:
-        cr.execute("delete from ir_model_fields where model_id = %s", (model_id.id,))
-        cr.execute("delete from ir_model where id = %s", (model_id.id,))
-    cr.execute("drop %s view IF EXISTS x_biwizard_%s" % ("MATERIALIZED" if object.x_materialized else "", object.x_name))
-    cr.execute('commit')
+        env.cr.execute("delete from ir_model_fields where model_id = %s", (model_id.id,))
+        env.cr.execute("delete from ir_model where id = %s", (model_id.id,))
+    env.cr.execute("drop %s view IF EXISTS x_biwizard_%s" % ("MATERIALIZED" if object.x_materialized else "", object.x_name))
+    env.cr.execute('commit')
     irrule_ids = env["ir.model.access"].search([('model_id', 'in', model_ids.ids)])
     irrule_ids.unlink()
     irrule_ids = env["ir.rule"].search([('model_id', 'in', model_ids.ids)])
@@ -139,12 +145,12 @@ model_data = {
     'info': 'Model for cube %s' % object.x_name,
     'state': 'manual',
 }
-model = env["ir.model"].create(model_data)
+model = env["ir.model"].with_context({'install_mode':1}).create(model_data)
 
 #Create fields
 for field in object.x_fields_ids:
     field_data = {
-        'name': calc_field_name(field.x_field_id.name),
+        'name': calc_field_name(field.x_field_id.name, field.x_cubemodel_id.x_name, field.x_alias),
         'model_id': model.id,
         'state': 'manual',
         'field_description': field.x_field_id.field_description,
@@ -153,18 +159,18 @@ for field in object.x_fields_ids:
         'relation_field': field.x_field_id.relation_field,
         'selection': field.x_field_id.selection,
         'domain': field.x_field_id.domain,
-        'serialization_field_id': field.x_field_id.serialization_field_id,
+        'related': field.x_field_id.related,
         'on_delete': field.x_field_id.on_delete,
         'required': field.x_field_id.required,
         'readonly': field.x_field_id.readonly,
-        'index': field.x_field_id.select_level,
+        'index': field.x_field_id.index,
         'translate': False,
     }
     newfield = env["ir.model.fields"].create(field_data)
 
 for field in object.x_computedfields_ids:
     field_data = {
-        'name': calc_field_name(field.x_name),
+        'name': calc_field_name(field.x_name, 'cptd'),
         'model_id': model.id,
         'state': 'manual',
         'field_description': field.x_name,
@@ -189,9 +195,9 @@ if view_ids:
 viewarch = '&lt;?xml version="1.0"?&gt;&lt;graph string="Cube %s" type="bar" stacked="True"&gt;' % object.x_name
 for field in object.x_fields_ids:
     if field.x_graph=='row':
-        viewarch += '    &lt;field name="%s"/&gt;' % calc_field_name(field.x_field_id.name)
+        viewarch += '    &lt;field name="%s"/&gt;' % calc_field_name(field.x_field_id.name, field.x_cubemodel_id.x_name, field.x_alias)
     elif field.x_graph=='measure':
-        viewarch += '    &lt;field name="%s" type="measure"/&gt;' % calc_field_name(field.x_field_id.name)
+        viewarch += '    &lt;field name="%s" type="measure"/&gt;' % calc_field_name(field.x_field_id.name, field.x_cubemodel_id.x_name, field.x_alias)
 
 viewarch += '&lt;/graph&gt;'
 
@@ -206,11 +212,11 @@ view_id = env["ir.ui.view"].create(view_data)
 viewarch = '&lt;?xml version="1.0"?&gt;&lt;graph string="Cube %s" type="pivot" stacked="True"&gt;' % object.x_name
 for field in object.x_fields_ids:
     if field.x_pivot=='row':
-        viewarch += '    &lt;field name="%s" type="row" /&gt;' % calc_field_name(field.x_field_id.name)
+        viewarch += '    &lt;field name="%s" type="row" /&gt;' % calc_field_name(field.x_field_id.name, field.x_cubemodel_id.x_name, field.x_alias)
     elif field.x_pivot=='col':
-        viewarch += '    &lt;field name="%s" type="col"/&gt;' % calc_field_name(field.x_field_id.name)
+        viewarch += '    &lt;field name="%s" type="col"/&gt;' % calc_field_name(field.x_field_id.name, field.x_cubemodel_id.x_name, field.x_alias)
     elif field.x_pivot=='measure':
-        viewarch += '    &lt;field name="%s" type="measure"/&gt;' % calc_field_name(field.x_field_id.name)
+        viewarch += '    &lt;field name="%s" type="measure"/&gt;' % calc_field_name(field.x_field_id.name, field.x_cubemodel_id.x_name, field.x_alias)
 viewarch += '&lt;/graph&gt;'
 
 view_data = {
@@ -241,10 +247,10 @@ for field in object.x_fields_ids:
     if field.x_groupable:
         searchview += '    &lt;group string="Group By"&gt;'
         searchview += '        &lt;filter name="group_by_%s" string="%s"' % (field.x_field_id.name, field.x_field_id.field_description if field.x_field_id.field_description else field.x_field_id.name)
-        searchview += '         context="{\'group_by\': \'%s\'}"/&gt;' % calc_field_name(field.x_field_id.name)
+        searchview += '         context="{\'group_by\': \'%s\'}"/&gt;' % calc_field_name(field.x_field_id.name, field.x_cubemodel_id.x_name, field.x_alias)
         searchview += '    &lt;/group&gt;'
     if field.x_searchable:
-        searchview += '    &lt;field name="%s"/&gt;' % calc_field_name(field.x_field_id.name)
+        searchview += '    &lt;field name="%s"/&gt;' % calc_field_name(field.x_field_id.name, field.x_cubemodel_id.x_name, field.x_alias)
 
 searchview += '        &lt;/search&gt;'
 
@@ -282,7 +288,7 @@ for rule in object.x_rule_ids:
 
 #Drop the created postgresql table
 #Replace it with a postgresql View
-cr.execute('drop table x_biwizard_%s' % object.x_name)
+env.cr.execute('drop table x_biwizard_%s' % object.x_name)
 update_cube(object)
 object.with_context(action=True).write({'x_state': 'sync'})
             </field>
@@ -292,36 +298,35 @@ object.with_context(action=True).write({'x_state': 'sync'})
             <field name="name">delete model for cube</field>
             <field name="model_id" eval="ref('biwizard.x_cubes')"/>
             <field name="state">code</field>
-            <field name="condition">True</field>
             <field name="sequence">5</field>
             <field name="code">
 #Clean action
-act_ids = env["ir.actions.act_window"].search([('res_model', '=', object.x_name)])
+act_ids = env["ir.actions.act_window"].search([('res_model', '=', record.x_name)])
 if act_ids:
     act_ids.unlink()
 
 #Clean menu
 parent = env.ref('biwizard.menu_biwizard_reporting')
-menu_ids = env["ir.ui.menu"].search([('name', '=', "%s" % object.x_name), ('parent_id', '=', parent.id)])
+menu_ids = env["ir.ui.menu"].search([('name', '=', "%s" % record.x_name), ('parent_id', '=', parent.id)])
 if menu_ids:
     menu_ids.unlink()
 
 #Clean views
-view_ids = env["ir.ui.view"].search([('model', '=', object.x_name)])
+view_ids = env["ir.ui.view"].search([('model', '=', record.x_name)])
 if view_ids:
     view_ids.unlink()
 
 #Clean model
-model_ids = env["ir.model"].search([('name', '=', object.x_name)])
+model_ids = env["ir.model"].search([('name', '=', record.x_name)])
 if model_ids:
-    cr.execute("drop %s view IF EXISTS x_biwizard_%s" % ("MATERIALIZED" if object.x_materialized else "", object.x_name))
+    env.cr.execute("drop %s view IF EXISTS x_biwizard_%s" % ("MATERIALIZED" if record.x_materialized else "", record.x_name))
     irrule_ids = env["ir.model.access"].search([('model_id', 'in', model_ids.ids)])
     irrule_ids.unlink()
     irrule_ids = env["ir.rule"].search([('model_id', 'in', model_ids.ids)])
     irrule_ids.unlink()
     model_ids.unlink()
 
-object.write({'x_state': 'draft'})
+record.write({'x_state': 'draft'})
             </field>
         </record>
 		
@@ -329,8 +334,8 @@ object.write({'x_state': 'draft'})
             <field name="name">Set cube to Edited</field>
             <field name="model_id" ref="biwizard.x_cubes"/>
             <field name="code">
-if not object.x_state=='draft':
-	object.write({'x_state': 'edited'})
+if not record.x_state=='draft':
+	record.write({'x_state': 'edited'})
             </field>
         </record>
 		
@@ -345,8 +350,8 @@ if not object.x_state=='draft':
             <field name="name">Update one materialized views</field>
             <field name="model_id" ref="biwizard.x_cubes"/>
             <field name="code">
-if object.x_materialized:
-    cr.execute("refresh materialized view %s x_biwizard_%s" % ("CONCURRENTLY" if object.x_refresh_concurrent else '', object.x_name))
+if record.x_materialized:
+    env.cr.execute("refresh materialized view %s x_biwizard_%s" % ("CONCURRENTLY" if record.x_refresh_concurrent else '', record.x_name))
             </field>
         </record>
 		
@@ -355,9 +360,9 @@ if object.x_materialized:
             <field name="model_id" ref="biwizard.x_cubes"/>
             <field name="code">
 for cube in model.search([('x_materialized', '=', True)]):
-    cr.execute("refresh materialized view %s x_biwizard_%s" % ("CONCURRENTLY" if object.x_refresh_concurrent else '', object.x_name))
+    env.cr.execute("refresh materialized view %s x_biwizard_%s" % ("CONCURRENTLY" if record.x_refresh_concurrent else '', record.x_name))
 for cube in env['x_biwizard.cubeunion'].search([('x_materialized', '=', True)]):
-    cr.execute("refresh materialized view %s x_biwizard_%s" % ("CONCURRENTLY" if object.x_refresh_concurrent else '', object.x_name))
+    env.cr.execute("refresh materialized view %s x_biwizard_%s" % ("CONCURRENTLY" if record.x_refresh_concurrent else '', record.x_name))
             </field>
         </record>
 			
