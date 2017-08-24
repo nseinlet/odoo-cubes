@@ -7,7 +7,8 @@
             <field name="info">BI cube unions' rules</field>
             <field name="state">manual</field>
         </record>
-
+	</data>
+	<data noupdate="false"> 
         <record id="biwizard.x_cubeunionrule_cube" model="ir.model.fields">
 			<field name="name">x_cubeunion_id</field>
 			<field name="field_description">Cube</field>
@@ -34,6 +35,5 @@
 			<field name="ttype">text</field>
 			<field name="state">manual</field>
 		</record>
-
 	</data>
 </openerp>

@@ -7,7 +7,8 @@
 			<field name="info">BI custom cubes</field>
 			<field name="state">manual</field>
 		</record>
-
+	</data>
+	<data noupdate="false">
         <record model="ir.model.fields" id="biwizard.x_cube_name">
 			<field name="name">x_name</field>
 			<field name="field_description">Name</field>
@@ -51,8 +52,6 @@
 			<field name="ttype">boolean</field>
 			<field name="state">manual</field>
 		</record>
-	</data>
-	<data noupdate="false">
 		<record model="ir.actions.server" id="biwizard.x_modelforcube_create">
             <field name="name">update model for cube</field>
             <field name="model_id" eval="ref('biwizard.x_cubes')"/>

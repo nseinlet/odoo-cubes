@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-	<data noupdate="true">
+	<data noupdate="false">
 
 		<!-- cubes o2m -->
 		<record model="ir.model.fields" id="biwizard.x_cube_modelsids">

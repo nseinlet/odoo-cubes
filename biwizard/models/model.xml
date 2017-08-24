@@ -7,7 +7,8 @@
             <field name="info">BI cubes' models</field>
             <field name="state">manual</field>
         </record>
-
+	</data>
+	<data noupdate="false"> 
         <record model="ir.model.fields" id="biwizard.x_cubemodel_cube">
 			<field name="name">x_cube_id</field>
 			<field name="field_description">Cube</field>
@@ -45,11 +46,6 @@
 			<field name="state">manual</field>
 			<field name="select_level">1</field>
 		</record>
-
-	</data>
-	
-	<data noupdate="false">
-
 		<record model="ir.actions.server" id="wkf_set_modelscube_to_edited">
 			<field name="name">Set cube state to Edited</field>
 			<field name="model_id" ref="biwizard.x_cubesmodel"/>

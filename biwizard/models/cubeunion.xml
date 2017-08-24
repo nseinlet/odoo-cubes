@@ -7,7 +7,8 @@
 			<field name="info">BI custom cube union</field>
 			<field name="state">manual</field>
 		</record>
-
+	</data>
+	<data noupdate="false">
         <record id="biwizard.x_cubeunion_name" model="ir.model.fields">
 			<field name="name">x_name</field>
 			<field name="field_description">Name</field>
@@ -60,9 +61,6 @@
 			<field name="relation">ir.model</field>
 			<field name="state">manual</field>
 		</record>        
-    </data>
-	
-	<data noupdate="false">
 		<record id="biwizard.x_modelforcubeunion_create" model="ir.actions.server">
             <field name="name">update model for cube</field>
             <field name="model_id" eval="ref('biwizard.x_cubeunion')"/>
@@ -70,7 +68,7 @@
             <field name="condition">True</field>
             <field name="sequence">5</field>
             <field name="code">
-return True
+action = True
             </field>
         </record>
 

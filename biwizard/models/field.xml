@@ -8,7 +8,8 @@
 			<field name="info">BI cubes' fields</field>
 			<field name="state">manual</field>
 		</record>
-        
+	</data>
+	<data noupdate="false">    
         <record model="ir.model.fields" id="biwizard.x_cubefield_cube">
 			<field name="name">x_cube_id</field>
 			<field name="field_description">Cube</field>
@@ -70,11 +71,6 @@
 			<field name="selection">[('row', 'row'), ('measure', 'measure')]</field>
 			<field name="state">manual</field>
 		</record>
-        
-	</data>
-	
-	
-	<data noupdate="false">
 		<record model="ir.actions.server" id="set_cube_id_in_field">
 			<field name="name">Set cube_id in fields</field>
 			<field name="model_id" ref="biwizard.x_cubesfield"/>
