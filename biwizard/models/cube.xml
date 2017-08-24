@@ -157,7 +157,7 @@ for field in object.x_fields_ids:
         'on_delete': field.x_field_id.on_delete,
         'required': field.x_field_id.required,
         'readonly': field.x_field_id.readonly,
-        'select_level': field.x_field_id.select_level,
+        'index': field.x_field_id.select_level,
         'translate': False,
     }
     newfield = env["ir.model.fields"].create(field_data)
