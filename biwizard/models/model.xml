@@ -44,7 +44,7 @@
 			<field name="model">x_biwizard.cubesmodel</field>
 			<field name="ttype">boolean</field>
 			<field name="state">manual</field>
-			<field name="select_level">1</field>
+			<field name="index">1</field>
 		</record>
 		<record model="ir.actions.server" id="wkf_set_modelscube_to_edited">
 			<field name="name">Set cube state to Edited</field>
