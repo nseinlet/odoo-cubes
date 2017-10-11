@@ -51,6 +51,16 @@
 		<field name="relation_field">x_cube_id</field>
 		<field name="state">manual</field>
 	</record>
+	<record model="ir.model.fields" id="biwizard.x_cube_filterids">
+		<field name="name">x_filter_ids</field>
+		<field name="field_description">Filters</field>
+		<field name="model_id" eval="ref('biwizard.x_cubes')"/>
+		<field name="model">x_biwizard.cubes</field>
+		<field name="ttype">one2many</field>
+		<field name="relation">x_biwizard.cubesfilters</field>
+		<field name="relation_field">x_cube_id</field>
+		<field name="state">manual</field>
+	</record>
 
 	<!-- CubeModel o2m -->
 	<record model="ir.model.fields" id="biwizard.x_cubemodels_link_ids">

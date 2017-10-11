@@ -23,10 +23,14 @@
 
 		<!-- Menu -->
 		<menuitem id="menu_biwizard_reporting" name="Custom Cubes" sequence="150"/>
+		
+		<menuitem id="menu_biwizard_cubeslist" parent="menu_biwizard_reporting" name="Cubes" sequence="10"/>
+		
+		<menuitem id="menu_biwizard_config" parent="menu_biwizard_reporting" name="Configuration" sequence="150"/>
 
-		<menuitem id="menu_biwizard_cubes_list" parent="menu_biwizard_reporting" name="Cubes" sequence="1"
+		<menuitem id="menu_biwizard_cubes_list" parent="menu_biwizard_config" name="Cubes" sequence="1"
 			action="biwizard_action_list_cubes"/>
-		<menuitem id="menu_biwizard_cubeunion_list" parent="menu_biwizard_reporting" name="Cube unions" sequence="2"
+		<menuitem id="menu_biwizard_cubeunion_list" parent="menu_biwizard_config" name="Cube unions" sequence="2"
 			action="biwizard_action_list_cubeunion"/>
 
 	</data>

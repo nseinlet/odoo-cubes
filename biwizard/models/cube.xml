@@ -176,10 +176,12 @@ for field in object.x_computedfields_ids:
         'field_description': field.x_name,
         'ttype': field.x_type,
     }
+    if field.x_type=="many2one":
+        field_data['relation'] = field.x_m2omodel
     field_id = env["ir.model.fields"].create(field_data)
 
 #Rebuild xml view
-parent = env.ref('biwizard.menu_biwizard_reporting')
+parent = env.ref('biwizard.menu_biwizard_cubeslist')
 menu_ids = env["ir.ui.menu"].search([('name', '=', "%s" % object.x_name), ('parent_id', '=', parent.id)])
 if menu_ids:
     menu_ids.unlink()
@@ -198,6 +200,11 @@ for field in object.x_fields_ids:
         viewarch += '    &lt;field name="%s"/&gt;' % calc_field_name(field.x_field_id.name, field.x_cubemodel_id.x_name, field.x_alias)
     elif field.x_graph=='measure':
         viewarch += '    &lt;field name="%s" type="measure"/&gt;' % calc_field_name(field.x_field_id.name, field.x_cubemodel_id.x_name, field.x_alias)
+for field in object.x_computedfields_ids:
+    if field.x_graph=='row':
+        viewarch += '    &lt;field name="%s"/&gt;' % calc_field_name(field.x_name, 'cptd')
+    elif field.x_graph=='measure':
+        viewarch += '    &lt;field name="%s" type="measure"/&gt;' % calc_field_name(field.x_name, 'cptd')
 
 viewarch += '&lt;/graph&gt;'
 
@@ -217,6 +224,13 @@ for field in object.x_fields_ids:
         viewarch += '    &lt;field name="%s" type="col"/&gt;' % calc_field_name(field.x_field_id.name, field.x_cubemodel_id.x_name, field.x_alias)
     elif field.x_pivot=='measure':
         viewarch += '    &lt;field name="%s" type="measure"/&gt;' % calc_field_name(field.x_field_id.name, field.x_cubemodel_id.x_name, field.x_alias)
+for field in object.x_computedfields_ids:
+    if field.x_pivot=='row':
+        viewarch += '    &lt;field name="%s" type="row" /&gt;' % calc_field_name(field.x_name, 'cptd')
+    elif field.x_pivot=='col':
+        viewarch += '    &lt;field name="%s" type="col"/&gt;' % calc_field_name(field.x_name, 'cptd')
+    elif field.x_pivot=='measure':
+        viewarch += '    &lt;field name="%s" type="measure"/&gt;' % calc_field_name(field.x_name, 'cptd')
 viewarch += '&lt;/graph&gt;'
 
 view_data = {
@@ -251,7 +265,17 @@ for field in object.x_fields_ids:
         searchview += '    &lt;/group&gt;'
     if field.x_searchable:
         searchview += '    &lt;field name="%s"/&gt;' % calc_field_name(field.x_field_id.name, field.x_cubemodel_id.x_name, field.x_alias)
-
+for field in object.x_computedfields_ids:
+    if field.x_groupable:
+        searchview += '    &lt;group string="Group By"&gt;'
+        searchview += '        &lt;filter name="group_by_%s" string="%s"' % (field.x_name, field.x_name)
+        searchview += '         context="{\'group_by\': \'%s\'}"/&gt;' % calc_field_name(field.x_name, 'cptd')
+        searchview += '    &lt;/group&gt;'
+    if field.x_searchable:
+        searchview += '    &lt;field name="%s"/&gt;' % calc_field_name(field.x_name, 'cptd')
+for flt in object.x_filter_ids:
+    searchview += '        &lt;filter name="%s" string="%s" domain="%s"/&gt;' % (flt.x_name, flt.x_string, flt.x_domain)
+	
 searchview += '        &lt;/search&gt;'
 
 view_data = {
@@ -300,19 +324,21 @@ object.with_context(action=True).write({'x_state': 'sync'})
             <field name="state">code</field>
             <field name="sequence">5</field>
             <field name="code">
+model_names = [rec.model for rec in env["ir.model"].search([('name', '=', record.x_name)])]
+
 #Clean action
 act_ids = env["ir.actions.act_window"].search([('res_model', '=', record.x_name)])
 if act_ids:
     act_ids.unlink()
 
 #Clean menu
-parent = env.ref('biwizard.menu_biwizard_reporting')
+parent = env.ref('biwizard.menu_biwizard_cubeslist')
 menu_ids = env["ir.ui.menu"].search([('name', '=', "%s" % record.x_name), ('parent_id', '=', parent.id)])
 if menu_ids:
     menu_ids.unlink()
 
 #Clean views
-view_ids = env["ir.ui.view"].search([('model', '=', record.x_name)])
+view_ids = env["ir.ui.view"].search([('model', 'in', model_names)])
 if view_ids:
     view_ids.unlink()
 

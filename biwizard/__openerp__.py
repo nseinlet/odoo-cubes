@@ -42,6 +42,7 @@ Create new views for BI analysis
              'models/rule.xml',
              'models/cubeunion.xml',
              'models/ruleunion.xml',
+             'models/filters.xml',
              'models/o2m.xml',
              'views/computedfields.xml',
              'views/cubes.xml',

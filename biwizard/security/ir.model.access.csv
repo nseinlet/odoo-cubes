@@ -23,3 +23,6 @@ biwizard_all_cubeunion,All on cube union,biwizard.x_cubeunion,,0,0,0,0
 biwizard_reader_ruleunion,Reader on cube union rules,biwizard.x_cubeunionrule,group_biwizard_reader,1,0,0,0
 biwizard_writer_ruleunion,Manager on cube union rules,biwizard.x_cubeunionrule,group_biwizard_writer,1,1,1,1
 biwizard_all_ruleunion,All on cube union rules,biwizard.x_cubeunionrule,,0,0,0,0
+biwizard_reader_filter,Reader on cube filter rules,biwizard.x_cubesfilters,group_biwizard_reader,1,0,0,0
+biwizard_writer_filter,Manager on cube filter rules,biwizard.x_cubesfilters,group_biwizard_writer,1,1,1,1
+biwizard_all_filter,All on cube filter rules,biwizard.x_cubesfilters,,0,0,0,0

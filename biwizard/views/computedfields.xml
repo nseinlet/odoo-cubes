@@ -9,13 +9,23 @@
 			<field name="arch" type="xml">
 				<form string="Computed fields form" version="7.0">
 					<sheet>
-						<group cols="4">
-							<field name="x_name"/>
-							<field name="x_type"/>
+						<group>
+							<group cols="4">
+								<field name="x_name"/>
+								<field name="x_type"/>
+								<field name="x_m2omodel" attrs="{'invisible': [('x_type', '!=', 'many2one')]}"/>
+							</group>
+							<group cols="4">
+								<field name="x_searchable"/>
+								<field name="x_groupable"/>
+								<field name="x_pivot"/>
+								<field name="x_graph"/>
+							</group>
+							<group colspan="4">
+								<field name="x_formula"/>
+							</group>
 						</group>
-						<group colspan="4">
-							<field name="x_formula"/>
-						</group>
+
 					</sheet>
 				</form>
 			</field>

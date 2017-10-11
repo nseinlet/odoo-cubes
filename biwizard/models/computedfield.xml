@@ -34,7 +34,7 @@
 			<field name="model_id" eval="ref('biwizard.x_cubescomputedfield')"/>
 			<field name="model">x_biwizard.cubescomputedfields</field>
 			<field name="ttype">selection</field>
-			<field name="selection">[('float', 'float'), ('integer', 'integer'), ('char','char'), ('date', 'date'), ('datetime', 'datetime')]</field>
+			<field name="selection">[('float', 'float'), ('integer', 'integer'), ('char','char'), ('date', 'date'), ('datetime', 'datetime'), ('many2one', 'many2one')]</field>
 			<field name="state">manual</field>
 			<field name="required">1</field>
 		</record>
@@ -47,6 +47,48 @@
 			<field name="state">manual</field>
 			<field name="required">1</field>
 		</record>
-        
+		<record model="ir.model.fields" id="biwizard.x_cubecomputedfield_search">
+			<field name="name">x_searchable</field>
+			<field name="field_description">Searchable</field>
+			<field name="model_id" eval="ref('biwizard.x_cubescomputedfield')"/>
+			<field name="model">x_biwizard.cubescomputedfields</field>
+			<field name="ttype">boolean</field>
+			<field name="state">manual</field>
+		</record>
+		<record model="ir.model.fields" id="biwizard.x_cubecomputedfield_group">
+			<field name="name">x_groupable</field>
+			<field name="field_description">Groupable</field>
+			<field name="model_id" eval="ref('biwizard.x_cubescomputedfield')"/>
+			<field name="model">x_biwizard.cubescomputedfields</field>
+			<field name="ttype">boolean</field>
+			<field name="state">manual</field>
+		</record>
+		<record model="ir.model.fields" id="biwizard.x_cubecomputedfield_pivot">
+			<field name="name">x_pivot</field>
+			<field name="field_description">Pivot</field>
+			<field name="model_id" eval="ref('biwizard.x_cubescomputedfield')"/>
+			<field name="model">x_biwizard.cubescomputedfields</field>
+			<field name="ttype">selection</field>
+			<field name="selection">[('row', 'row'), ('col', 'col'), ('measure', 'measure')]</field>
+			<field name="state">manual</field>
+		</record>
+		<record model="ir.model.fields" id="biwizard.x_cubecomputedfield_graph">
+			<field name="name">x_graph</field>
+			<field name="field_description">Graph</field>
+			<field name="model_id" eval="ref('biwizard.x_cubescomputedfield')"/>
+			<field name="model">x_biwizard.cubescomputedfields</field>
+			<field name="ttype">selection</field>
+			<field name="selection">[('row', 'row'), ('measure', 'measure')]</field>
+			<field name="state">manual</field>
+		</record>
+		<record model="ir.model.fields" id="biwizard.x_cubecomputedfield_m2omodel">
+			<field name="name">x_m2omodel</field>
+			<field name="field_description">Model</field>
+			<field name="model_id" eval="ref('biwizard.x_cubescomputedfield')"/>
+			<field name="model">x_biwizard.cubescomputedfields</field>
+			<field name="ttype">char</field>
+			<field name="state">manual</field>
+		</record>
+		
 	</data>
 </openerp>
