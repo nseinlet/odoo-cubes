@@ -34,9 +34,11 @@
 										<field name="x_sequence" widget="handle"/>
 										<field name="x_cubemodel1_id" domain="[('x_cube_id', '=', parent.id)]" options="{'quick_create': false, 'no_create': true, 'no_open': True}"/>
 										<field name="x_field1_id" domain="[('model_id.x_cubemodel_ids.id', '=', x_cubemodel1_id)]" options="{'quick_create': false, 'no_create': true, 'no_open': True}"/>
+										<field name="x_field1_name"/>
 										<field name="x_linktype"/>
 										<field name="x_cubemodel2_id" domain="[('x_cube_id', '=', parent.id)]" options="{'quick_create': false, 'no_create': true, 'no_open': True}"/>
 										<field name="x_field2_id" domain="[('model_id.x_cubemodel_ids.id', '=', x_cubemodel2_id)]" options="{'quick_create': false, 'no_create': true, 'no_open': True}"/>
+										<field name="x_field2_name"/>
 									</tree>
 								</field>
 							</page>
@@ -49,6 +51,7 @@
 										<field name="x_graph"/>
 										<field name="x_searchable"/>
 										<field name="x_groupable"/>
+										<field name="x_techname" readonly="1"/>
 										<field name="x_alias"/>
 									</tree>
 								</field>

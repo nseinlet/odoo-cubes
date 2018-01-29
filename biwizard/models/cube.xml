@@ -94,10 +94,10 @@ def update_cube(object):
         query='%s,"%s"."%s" as "%s"' % (query, mdls[0].x_name, fld, fld)
 	
     #Joins
-	aliased = []
+    aliased = []
     if object.x_links_ids:
         jointures = ""
-        for jointure in env['x_biwizard.cubeslinks'].search([('id', 'in', object.x_links_ids.ids)], order='x_sequence'):
+        for jointure in env['x_biwizard.cubeslinks'].search([('id', 'in', object.x_links_ids.ids)]).sorted(key=lambda r: r.x_sequence+1):
             if jointures=="":
                 jointures = '"%s" as %s' % (jointure.x_cubemodel1_id.x_model_id.model.replace(".", "_"), jointure.x_cubemodel1_id.x_name)
                 aliased.append(jointure.x_cubemodel1_id.x_name)

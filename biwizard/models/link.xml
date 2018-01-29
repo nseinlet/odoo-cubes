@@ -48,6 +48,16 @@
 			<field name="state">manual</field>
 			<field name="required">1</field>
 		</record>
+		<record model="ir.model.fields" id="biwizard.x_cubelink_field1_name">
+			<field name="name">x_field1_name</field>
+			<field name="field_description">Source field db name</field>
+			<field name="model_id" eval="ref('biwizard.x_cubeslinks')"/>
+			<field name="model">x_biwizard.cubeslinks</field>
+			<field name="ttype">char</field>
+			<field name="related">x_field1_id.name</field>
+			<field name="state">manual</field>
+			<field name="readonly">1</field>
+		</record>
 		<record model="ir.model.fields" id="biwizard.x_cubelink_model2">
 			<field name="name">x_cubemodel2_id</field>
 			<field name="field_description">Destination model</field>
@@ -67,6 +77,16 @@
 			<field name="relation">ir.model.fields</field>
 			<field name="state">manual</field>
 			<field name="required">1</field>
+		</record>
+		<record model="ir.model.fields" id="biwizard.x_cubelink_field2_name">
+			<field name="name">x_field2_name</field>
+			<field name="field_description">Destination field db name</field>
+			<field name="model_id" eval="ref('biwizard.x_cubeslinks')"/>
+			<field name="model">x_biwizard.cubeslinks</field>
+			<field name="ttype">char</field>
+			<field name="related">x_field2_id.name</field>
+			<field name="state">manual</field>
+			<field name="readonly">1</field>
 		</record>
 		<record model="ir.model.fields" id="biwizard.x_cubelink_linktype">
 			<field name="name">x_linktype</field>
